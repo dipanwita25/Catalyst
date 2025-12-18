@@ -1,0 +1,1240 @@
+<!doctype html>
+<html lang="en" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FineDine - Restaurant Booking</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <script src="/_sdk/data_sdk.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&amp;family=Source+Sans+3:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+  <style>
+    /* ========================================
+       CSS STYLES - TABLEFINE RESTAURANT BOOKING
+       ======================================== */
+    
+    /* === BASE STYLES === */
+    * {
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      box-sizing: border-box;
+      font-family: 'Source Sans 3', sans-serif;
+      font-weight: 400;
+      line-height: 1.7;
+      color: #fef2f2;
+      letter-spacing: 0.01em;
+    }
+    
+    /* === TYPOGRAPHY === */
+    .font-display {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+    
+    h1, h2, h3 {
+      font-family: 'Playfair Display', Georgia, serif;
+      line-height: 1.15;
+      font-weight: 600;
+    }
+    
+    .text-accent {
+      color: #fbbf24;
+    }
+    
+    .text-muted {
+      color: rgba(255, 255, 255, 0.5);
+    }
+    
+    .text-light {
+      color: rgba(255, 255, 255, 0.85);
+    }
+    
+    /* === COLOR PALETTE === 
+       Primary: Deep Burgundy (#7f1d1d)
+       Secondary: Rich Crimson (#991b1b)
+       Accent: Warm Rose (#dc2626)
+       Light: Soft Blush (#fef2f2)
+       Dark: Wine (#450a0a)
+    */
+    
+    /* === BACKGROUND GRADIENTS === */
+    .booking-gradient {
+      background: linear-gradient(135deg, #450a0a 0%, #7f1d1d 40%, #991b1b 70%, #7f1d1d 100%);
+      position: relative;
+    }
+    
+    .booking-gradient::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: 
+        radial-gradient(ellipse at 20% 20%, rgba(220, 38, 38, 0.15) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 80%, rgba(153, 27, 27, 0.2) 0%, transparent 50%);
+      pointer-events: none;
+    }
+    
+    /* === CARD STYLES === */
+    .glass-card {
+      background: rgba(254, 242, 242, 0.97);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(220, 38, 38, 0.1);
+      box-shadow: 
+        0 4px 6px -1px rgba(69, 10, 10, 0.1),
+        0 2px 4px -2px rgba(69, 10, 10, 0.1);
+    }
+    
+    /* === ACCENT BUTTON === */
+    .gold-accent {
+      background: linear-gradient(135deg, #dc2626 0%, #b91c1c 50%, #991b1b 100%);
+      box-shadow: 0 4px 14px rgba(220, 38, 38, 0.4);
+      transition: all 0.3s ease;
+    }
+    
+    .gold-accent:hover {
+      box-shadow: 0 6px 20px rgba(220, 38, 38, 0.5);
+      transform: translateY(-1px);
+    }
+    
+    /* === ANIMATIONS === */
+    @keyframes fadeInUp {
+      from { 
+        opacity: 0; 
+        transform: translateY(30px); 
+      }
+      to { 
+        opacity: 1; 
+        transform: translateY(0); 
+      }
+    }
+    
+    @keyframes pulse-glow {
+      0%, 100% { 
+        box-shadow: 0 0 20px rgba(220, 38, 38, 0.3); 
+      }
+      50% { 
+        box-shadow: 0 0 40px rgba(220, 38, 38, 0.5); 
+      }
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    
+    .animate-fade-in-up {
+      animation: fadeInUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+      opacity: 0;
+    }
+    
+    .delay-100 { animation-delay: 0.1s; }
+    .delay-200 { animation-delay: 0.2s; }
+    .delay-300 { animation-delay: 0.3s; }
+    .delay-400 { animation-delay: 0.4s; }
+    
+    /* === FORM ELEMENTS === */
+    input, select, textarea {
+      font-family: 'Source Sans 3', sans-serif;
+      transition: all 0.3s ease;
+      font-size: 15px;
+    }
+    
+    input:focus, select:focus, textarea:focus {
+      border-color: #dc2626 !important;
+      box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.15) !important;
+    }
+    
+    /* === TIME SLOT BUTTONS === */
+    .time-slot {
+      transition: all 0.2s ease;
+    }
+    
+    .time-slot:hover {
+      border-color: #dc2626;
+      background-color: #fef2f2;
+      color: #991b1b;
+    }
+    
+    .time-slot.selected {
+      background: linear-gradient(135deg, #dc2626, #b91c1c);
+      color: white;
+      border-color: transparent;
+    }
+    
+    /* === FILTER PILLS === */
+    .filter-pill {
+      transition: all 0.3s ease;
+    }
+    
+    .filter-pill:hover {
+      transform: translateY(-2px);
+    }
+    
+    .filter-pill.active {
+      background: linear-gradient(135deg, #dc2626, #b91c1c) !important;
+    }
+    
+    /* === RESTAURANT CARDS === */
+    .restaurant-card {
+      transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    
+    .restaurant-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 
+        0 20px 40px -10px rgba(69, 10, 10, 0.3),
+        0 10px 20px -5px rgba(69, 10, 10, 0.2);
+    }
+    
+    /* === SCROLLBAR STYLING === */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    
+    ::-webkit-scrollbar-track {
+      background: #450a0a;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+      background: #991b1b;
+      border-radius: 4px;
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+      background: #dc2626;
+    }
+    
+    /* === DECORATIVE ELEMENTS === */
+    .decorative-circle {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(60px);
+      pointer-events: none;
+    }
+    
+    /* === RESPONSIVE ADJUSTMENTS === */
+    @media (max-width: 768px) {
+      .font-display {
+        letter-spacing: 0.01em;
+      }
+      
+      .glass-card {
+        backdrop-filter: blur(8px);
+      }
+    }
+  </style>
+  <style>@view-transition { navigation: auto; }</style>
+ </head>
+ <body class="h-full">
+  <div id="app" class="h-full overflow-auto booking-gradient"><!-- Navigation -->
+   <nav class="fixed top-0 left-0 right-0 z-50 px-6 py-4">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+     <div class="flex items-center gap-2">
+      <div class="w-11 h-11 rounded-full overflow-hidden shadow-lg" style="animation: pulse-glow 3s infinite;"><img src="https://cdn.dribbble.com/userupload/45287009/file/01262fb0a3e78097fffea7ebd6a7ec88.jpg?resize=752x&amp;vertical=center" alt="FineDine Logo" class="w-full h-full object-cover" onerror="this.src=''; this.alt='FineDine'; this.style.display='none';">
+      </div><span id="nav-title" class="text-white font-display text-3xl font-semibold tracking-wide">FineDine</span>
+     </div>
+     <div class="hidden md:flex items-center gap-8"><button onclick="scrollToSection('restaurants')" class="text-white/80 hover:text-white transition-colors">Restaurants</button> <button onclick="scrollToSection('how-it-works')" class="text-white/80 hover:text-white transition-colors">How It Works</button> <button onclick="showMyBookings()" class="gold-accent text-white px-5 py-2 rounded-full font-medium hover:opacity-90 transition-opacity">My Bookings</button>
+     </div>
+    </div>
+   </nav><!-- Hero Section -->
+   <section class="relative min-h-screen flex items-center justify-center px-6 pt-20">
+    <div class="absolute inset-0 overflow-hidden"><img src="https://i.ibb.co/PZrFFHTc/hero-restaurant.jpg" alt="" class="absolute inset-0 w-full h-full object-cover opacity-30" onerror="this.style.display='none';">
+     <div class="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/80"></div>
+     <div class="decorative-circle top-20 left-10 w-80 h-80 bg-red-500/20"></div>
+     <div class="decorative-circle bottom-20 right-10 w-96 h-96 bg-rose-400/15"></div>
+    </div>
+    <div class="relative text-center max-w-4xl mx-auto">
+     <h1 id="hero-heading" class="font-display text-5xl md:text-7xl text-white font-bold mb-8 animate-fade-in-up leading-tight">Discover &amp; Book<br><span class="text-amber-300">Amazing Restaurants</span></h1>
+     <p id="hero-subtext" class="text-xl text-white/90 mb-10 animate-fade-in-up delay-100 max-w-2xl mx-auto font-light leading-relaxed">Find the perfect table for any occasion. Browse top-rated restaurants, check real-time availability, and secure your reservation in seconds.</p><!-- Search Bar -->
+     <div class="glass-card rounded-2xl p-4 md:p-6 shadow-2xl animate-fade-in-up delay-200">
+      <div class="flex flex-col md:flex-row gap-4">
+       <div class="flex-1"><label for="search-cuisine" class="block text-left text-sm font-medium text-red-900 mb-2">Cuisine or Restaurant</label> <input type="text" id="search-cuisine" placeholder="Italian, Sushi, Steakhouse..." class="w-full px-4 py-3 rounded-xl border border-red-200 focus:border-red-500 focus:ring-2 focus:ring-red-500/20 outline-none transition-all text-gray-800">
+       </div>
+       <div class="md:w-40"><label for="search-date" class="block text-left text-sm font-medium text-red-900 mb-2">Date</label> <input type="date" id="search-date" class="w-full px-4 py-3 rounded-xl border border-red-200 focus:border-red-500 focus:ring-2 focus:ring-red-500/20 outline-none transition-all text-gray-800">
+       </div>
+       <div class="md:w-32"><label for="search-guests" class="block text-left text-sm font-medium text-red-900 mb-2">Guests</label> <select id="search-guests" class="w-full px-4 py-3 rounded-xl border border-red-200 focus:border-red-500 focus:ring-2 focus:ring-red-500/20 outline-none transition-all text-gray-800"> <option value="2">2 guests</option> <option value="3">3 guests</option> <option value="4">4 guests</option> <option value="5">5 guests</option> <option value="6">6 guests</option> <option value="7">7 guests</option> <option value="8">8+ guests</option> </select>
+       </div>
+       <div class="md:self-end"><button onclick="searchRestaurants()" class="w-full gold-accent text-white px-8 py-3 rounded-xl font-semibold hover:opacity-90 transition-opacity flex items-center justify-center gap-2">
+         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+         </svg> Search </button>
+       </div>
+      </div>
+     </div>
+    </div><!-- Scroll indicator -->
+    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
+     <svg class="w-6 h-6 text-white/50" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+     </svg>
+    </div>
+   </section><!-- Restaurants Section -->
+   <section id="restaurants" class="py-20 px-6">
+    <div class="max-w-7xl mx-auto">
+     <div class="text-center mb-12">
+      <p class="text-amber-400 uppercase tracking-widest text-sm font-semibold mb-3">Curated Selection</p>
+      <h2 class="font-display text-4xl md:text-5xl text-white font-bold mb-4">Featured Restaurants</h2>
+      <p class="text-white/70 text-lg font-light">Handpicked dining experiences for every taste</p>
+     </div><!-- Filter Pills -->
+     <div class="flex flex-wrap justify-center gap-3 mb-10"><button onclick="filterByCategory('all')" class="filter-pill active px-6 py-2.5 rounded-full text-sm font-medium transition-all bg-red-600 text-white shadow-lg" data-category="all">All</button> <button onclick="filterByCategory('indian')" class="filter-pill px-6 py-2.5 rounded-full text-sm font-medium transition-all bg-white/10 text-white hover:bg-red-600/50 border border-white/20" data-category="indian">Biryani</button> <button onclick="filterByCategory('kebab')" class="filter-pill px-6 py-2.5 rounded-full text-sm font-medium transition-all bg-white/10 text-white hover:bg-red-600/50 border border-white/20" data-category="kebab">Kebabs</button> <button onclick="filterByCategory('italian')" class="filter-pill px-6 py-2.5 rounded-full text-sm font-medium transition-all bg-white/10 text-white hover:bg-red-600/50 border border-white/20" data-category="italian">Italian</button> <button onclick="filterByCategory('japanese')" class="filter-pill px-6 py-2.5 rounded-full text-sm font-medium transition-all bg-white/10 text-white hover:bg-red-600/50 border border-white/20" data-category="japanese">Japanese</button> <button onclick="filterByCategory('steakhouse')" class="filter-pill px-6 py-2.5 rounded-full text-sm font-medium transition-all bg-white/10 text-white hover:bg-red-600/50 border border-white/20" data-category="steakhouse">Steakhouse</button> <button onclick="filterByCategory('seafood')" class="filter-pill px-6 py-2.5 rounded-full text-sm font-medium transition-all bg-white/10 text-white hover:bg-red-600/50 border border-white/20" data-category="seafood">Seafood</button> <button onclick="filterByCategory('french')" class="filter-pill px-6 py-2.5 rounded-full text-sm font-medium transition-all bg-white/10 text-white hover:bg-red-600/50 border border-white/20" data-category="french">French</button>
+     </div><!-- Restaurant Grid -->
+     <div id="restaurant-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6"><!-- Restaurants will be rendered here -->
+     </div>
+    </div>
+   </section><!-- How It Works -->
+   <section id="how-it-works" class="py-20 px-6 relative overflow-hidden" style="background: linear-gradient(135deg, #ffffff 0%, #f8f5f2 30%, #f5f0eb 60%, #faf8f6 100%);">
+    <div class="absolute inset-0 opacity-30" style="background-image: radial-gradient(circle at 20% 50%, #fef2f2 0%, transparent 50%), radial-gradient(circle at 80% 50%, #fdf4f1 0%, transparent 50%);"></div>
+    <div class="max-w-5xl mx-auto relative z-10">
+     <div class="text-center mb-16">
+      <p class="text-red-600 uppercase tracking-widest text-sm font-semibold mb-3">Simple Process</p>
+      <h2 class="font-display text-4xl md:text-5xl text-gray-900 font-bold mb-4">How It Works</h2>
+      <p class="text-gray-600 text-lg font-light">Book your perfect table in 3 simple steps</p>
+     </div>
+     <div class="grid md:grid-cols-3 gap-8">
+      <div class="text-center">
+       <div class="w-16 h-16 gold-accent rounded-2xl flex items-center justify-center mx-auto mb-6">
+        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+       </div>
+       <p class="text-red-600 text-sm font-semibold mb-2">Step 1</p>
+       <h3 class="text-gray-900 font-display text-2xl mb-3">Discover</h3>
+       <p class="text-gray-600 font-light leading-relaxed">Browse our curated selection of top restaurants by cuisine, location, or special features.</p>
+      </div>
+      <div class="text-center">
+       <div class="w-16 h-16 gold-accent rounded-2xl flex items-center justify-center mx-auto mb-6">
+        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+        </svg>
+       </div>
+       <p class="text-red-600 text-sm font-semibold mb-2">Step 2</p>
+       <h3 class="text-gray-900 font-display text-2xl mb-3">Check Availability</h3>
+       <p class="text-gray-600 font-light leading-relaxed">See real-time availability and choose the perfect date, time, and party size.</p>
+      </div>
+      <div class="text-center">
+       <div class="w-16 h-16 gold-accent rounded-2xl flex items-center justify-center mx-auto mb-6">
+        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+        </svg>
+       </div>
+       <p class="text-red-600 text-sm font-semibold mb-2">Step 3</p>
+       <h3 class="text-gray-900 font-display text-2xl mb-3">Book Instantly</h3>
+       <p class="text-gray-600 font-light leading-relaxed">Confirm your reservation instantly and receive a confirmation with all the details.</p>
+      </div>
+     </div>
+    </div>
+   </section><!-- Booking Modal -->
+   <div id="booking-modal" class="fixed inset-0 z-50 hidden">
+    <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" onclick="closeBookingModal()"></div>
+    <div class="absolute inset-4 md:inset-auto md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:w-full md:max-w-2xl bg-white rounded-3xl overflow-hidden shadow-2xl max-h-full overflow-y-auto">
+     <div id="modal-content"><!-- Content will be rendered dynamically -->
+     </div>
+    </div>
+   </div><!-- My Bookings Modal -->
+   <div id="bookings-modal" class="fixed inset-0 z-50 hidden">
+    <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" onclick="closeBookingsModal()"></div>
+    <div class="absolute inset-4 md:inset-auto md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:w-full md:max-w-2xl bg-white rounded-3xl overflow-hidden shadow-2xl max-h-full overflow-y-auto">
+     <div class="p-8">
+      <div class="flex items-center justify-between mb-6">
+       <h2 class="font-display text-2xl font-bold text-gray-900">My Bookings</h2><button onclick="closeBookingsModal()" class="p-2 hover:bg-gray-100 rounded-full transition-colors">
+        <svg class="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg></button>
+      </div>
+      <div id="bookings-list"><!-- Bookings will be rendered here -->
+      </div>
+     </div>
+    </div>
+   </div><!-- Footer -->
+   <footer class="bg-gradient-to-b from-transparent to-black/40 pt-16 pb-8 px-6">
+    <div class="max-w-7xl mx-auto">
+     <div class="grid md:grid-cols-4 gap-10 mb-12"><!-- Brand Column -->
+      <div class="md:col-span-1">
+       <div class="flex items-center gap-2 mb-4">
+        <div class="w-10 h-10 rounded-full overflow-hidden shadow-lg"><img src="https://cdn.dribbble.com/userupload/45287009/file/01262fb0a3e78097fffea7ebd6a7ec88.jpg?resize=752x&amp;vertical=center" alt="FineDine Logo" class="w-full h-full object-cover" onerror="this.style.display='none';">
+        </div><span class="text-white font-display text-2xl font-semibold">FineDine</span>
+       </div>
+       <p class="text-white/60 text-sm leading-relaxed mb-6">Discover and book the finest dining experiences. Your perfect table awaits.</p>
+       <div class="flex gap-4"><a href="#" class="w-10 h-10 bg-white/10 hover:bg-red-600 rounded-full flex items-center justify-center transition-colors">
+         <svg class="w-5 h-5 text-white" fill="currentColor" viewbox="0 0 24 24">
+          <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z" />
+         </svg></a> <a href="#" class="w-10 h-10 bg-white/10 hover:bg-red-600 rounded-full flex items-center justify-center transition-colors">
+         <svg class="w-5 h-5 text-white" fill="currentColor" viewbox="0 0 24 24">
+          <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
+         </svg></a> <a href="#" class="w-10 h-10 bg-white/10 hover:bg-red-600 rounded-full flex items-center justify-center transition-colors">
+         <svg class="w-5 h-5 text-white" fill="currentColor" viewbox="0 0 24 24">
+          <path d="M22.675 0h-21.35c-.732 0-1.325.593-1.325 1.325v21.351c0 .731.593 1.324 1.325 1.324h11.495v-9.294h-3.128v-3.622h3.128v-2.671c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.795.143v3.24l-1.918.001c-1.504 0-1.795.715-1.795 1.763v2.313h3.587l-.467 3.622h-3.12v9.293h6.116c.73 0 1.323-.593 1.323-1.325v-21.35c0-.732-.593-1.325-1.325-1.325z" />
+         </svg></a>
+       </div>
+      </div><!-- Quick Links -->
+      <div>
+       <h4 class="text-white font-semibold text-lg mb-4">Quick Links</h4>
+       <ul class="space-y-3">
+        <li><a href="#" onclick="scrollToSection('restaurants'); return false;" class="text-white/60 hover:text-white transition-colors text-sm">Browse Restaurants</a></li>
+        <li><a href="#" onclick="scrollToSection('how-it-works'); return false;" class="text-white/60 hover:text-white transition-colors text-sm">How It Works</a></li>
+        <li><a href="#" onclick="showMyBookings(); return false;" class="text-white/60 hover:text-white transition-colors text-sm">My Bookings</a></li>
+        <li><a href="#" class="text-white/60 hover:text-white transition-colors text-sm">Gift Cards</a></li>
+       </ul>
+      </div><!-- Contact Info -->
+      <div>
+       <h4 class="text-white font-semibold text-lg mb-4">Contact Us</h4>
+       <ul class="space-y-3">
+        <li class="flex items-center gap-3">
+         <svg class="w-5 h-5 text-amber-400 flex-shrink-0" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+         </svg><a href="mailto:contact@finedine.com" class="text-white/60 hover:text-white transition-colors text-sm">contact@finedine.com</a></li>
+        <li class="flex items-center gap-3">
+         <svg class="w-5 h-5 text-amber-400 flex-shrink-0" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+         </svg><a href="tel:+919749475041" class="text-white/60 hover:text-white transition-colors text-sm">+91 9749475041</a></li>
+        <li class="flex items-start gap-3">
+         <svg class="w-5 h-5 text-amber-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+         </svg><span class="text-white/60 text-sm">Park Street<br>
+          Kolkata - 700016</span></li>
+       </ul>
+      </div><!-- Account -->
+      <div>
+       <h4 class="text-white font-semibold text-lg mb-4">Account</h4>
+       <div class="space-y-3"><button onclick="showAuthModal('login')" class="w-full bg-white/10 hover:bg-white/20 border border-white/20 text-white py-2.5 px-4 rounded-xl font-medium transition-all text-sm flex items-center justify-center gap-2">
+         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+         </svg> Log In </button> <button onclick="showAuthModal('signup')" class="w-full gold-accent text-white py-2.5 px-4 rounded-xl font-medium transition-all text-sm flex items-center justify-center gap-2">
+         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+         </svg> Sign Up </button>
+       </div>
+       <p class="text-white/40 text-xs mt-4">Join us to save your favorite restaurants and get exclusive deals.</p>
+      </div>
+     </div><!-- Bottom Bar -->
+     <div class="border-t border-white/10 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
+      <p class="text-white/40 text-sm">© 2024 FineDine. All rights reserved.</p>
+      <div class="flex gap-6"><a href="#" class="text-white/40 hover:text-white text-sm transition-colors">Privacy Policy</a> <a href="#" class="text-white/40 hover:text-white text-sm transition-colors">Terms of Service</a> <a href="#" class="text-white/40 hover:text-white text-sm transition-colors">Cookie Policy</a>
+      </div>
+     </div>
+    </div>
+   </footer><!-- Auth Modal -->
+   <div id="auth-modal" class="fixed inset-0 z-50 hidden">
+    <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" onclick="closeAuthModal()"></div>
+    <div class="absolute inset-4 md:inset-auto md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:w-full md:max-w-md bg-white rounded-3xl overflow-hidden shadow-2xl">
+     <div id="auth-modal-content"><!-- Auth content will be rendered here -->
+     </div>
+    </div>
+   </div><!-- Toast Notification -->
+   <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 hidden">
+    <div class="bg-gray-900 text-white px-6 py-3 rounded-xl shadow-lg flex items-center gap-3">
+     <svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+     </svg><span id="toast-message">Booking confirmed!</span>
+    </div>
+   </div>
+  </div>
+  <script>
+    // Restaurant data
+    const restaurants = [
+      {
+        id: 'la-bella-vita',
+        name: 'La Bella Vita',
+        category: 'italian',
+        cuisine: 'Italian Fine Dining',
+        rating: 4.9,
+        reviews: 324,
+        price: '$$$$',
+        image: 'https://images.unsplash.com/photo-1546549032-9571cd6b27df?w=400&h=300&fit=crop',
+        description: 'Authentic Italian cuisine in an elegant setting with handmade pasta and premium ingredients.',
+        address: '123 Main Street',
+        features: ['Outdoor Seating', 'Private Dining', 'Wine Bar'],
+        availableTimes: ['17:00', '17:30', '18:00', '18:30', '19:00', '19:30', '20:00', '20:30', '21:00']
+      },
+      {
+        id: 'sakura-tokyo',
+        name: 'Sakura Tokyo',
+        category: 'japanese',
+        cuisine: 'Japanese Omakase',
+        rating: 4.8,
+        reviews: 256,
+        price: '$$$$',
+        image: 'https://images.unsplash.com/photo-1579871494447-9811cf80d66c?w=400&h=300&fit=crop',
+        description: 'Experience the art of omakase with our master chef\'s carefully curated seasonal selections.',
+        address: '456 Oak Avenue',
+        features: ['Sushi Bar', 'Private Rooms', 'Sake Selection'],
+        availableTimes: ['18:00', '18:30', '19:00', '19:30', '20:00', '20:30']
+      },
+      {
+        id: 'the-prime-cut',
+        name: 'The Prime Cut',
+        category: 'steakhouse',
+        cuisine: 'American Steakhouse',
+        rating: 4.7,
+        reviews: 412,
+        price: '$$$',
+        image: 'https://images.unsplash.com/photo-1544025162-d76694265947?w=400&h=300&fit=crop',
+        description: 'Premium dry-aged steaks cooked to perfection in a classic steakhouse atmosphere.',
+        address: '789 Broadway',
+        features: ['Dry-Aged Beef', 'Full Bar', 'Valet Parking'],
+        availableTimes: ['17:00', '17:30', '18:00', '18:30', '19:00', '19:30', '20:00', '20:30', '21:00', '21:30']
+      },
+      {
+        id: 'royal-biryani-house',
+        name: 'Royal Biryani House',
+        category: 'indian',
+        cuisine: 'Authentic Biryani',
+        rating: 4.9,
+        reviews: 534,
+        price: '$$',
+        image: 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=400&h=300&fit=crop',
+        description: 'Legendary Hyderabadi and Lucknowi biryanis slow-cooked with aromatic spices and saffron.',
+        address: '100 Spice Boulevard',
+        features: ['Dum Cooking', 'Family Platters', 'Catering'],
+        availableTimes: ['12:00', '12:30', '13:00', '18:00', '18:30', '19:00', '19:30', '20:00', '20:30']
+      },
+      {
+        id: 'kebab-kingdom',
+        name: 'Kebab Kingdom',
+        category: 'kebab',
+        cuisine: 'Kebabs & Grills',
+        rating: 4.7,
+        reviews: 389,
+        price: '$$',
+        image: 'https://images.unsplash.com/photo-1603360946369-dc9bb6258143?w=400&h=300&fit=crop',
+        description: 'Succulent seekh kebabs, tender galouti, and charcoal-grilled tikkas from master chefs.',
+        address: '225 Grill Street',
+        features: ['Live Grill', 'Outdoor Seating', 'Halal Certified'],
+        availableTimes: ['17:00', '17:30', '18:00', '18:30', '19:00', '19:30', '20:00', '20:30', '21:00']
+      },
+      {
+        id: 'ocean-blue',
+        name: 'Ocean Blue',
+        category: 'seafood',
+        cuisine: 'Coastal Seafood',
+        rating: 4.8,
+        reviews: 289,
+        price: '$$$',
+        image: 'https://images.unsplash.com/photo-1615141982883-c7ad0e69fd62?w=400&h=300&fit=crop',
+        description: 'Fresh catches daily from sustainable sources, prepared with Mediterranean influences.',
+        address: '321 Harbor Drive',
+        features: ['Waterfront View', 'Raw Bar', 'Outdoor Patio'],
+        availableTimes: ['17:30', '18:00', '18:30', '19:00', '19:30', '20:00', '20:30']
+      },
+      {
+        id: 'le-jardin',
+        name: 'Le Jardin',
+        category: 'french',
+        cuisine: 'French Bistro',
+        rating: 4.6,
+        reviews: 198,
+        price: '$$$',
+        image: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=400&h=300&fit=crop',
+        description: 'Classic French cuisine with a modern twist, featuring seasonal ingredients from local farms.',
+        address: '555 Garden Lane',
+        features: ['Garden Terrace', 'Brunch Service', 'Wine Cellar'],
+        availableTimes: ['18:00', '18:30', '19:00', '19:30', '20:00', '20:30', '21:00']
+      },
+      {
+        id: 'mughal-darbar',
+        name: 'Mughal Darbar',
+        category: 'indian',
+        cuisine: 'Mughlai Cuisine',
+        rating: 4.8,
+        reviews: 445,
+        price: '$$$',
+        image: 'https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=400&h=300&fit=crop',
+        description: 'Royal Mughlai delicacies including rich curries, naans, and aromatic rice dishes.',
+        address: '450 Royal Avenue',
+        features: ['Live Music', 'Private Dining', 'Hookah Lounge'],
+        availableTimes: ['12:00', '12:30', '13:00', '18:00', '18:30', '19:00', '19:30', '20:00']
+      },
+      {
+        id: 'tandoor-nights',
+        name: 'Tandoor Nights',
+        category: 'kebab',
+        cuisine: 'Tandoori Specialties',
+        rating: 4.6,
+        reviews: 312,
+        price: '$$',
+        image: 'https://images.unsplash.com/photo-1599487488170-d11ec9c172f0?w=400&h=300&fit=crop',
+        description: 'Authentic clay oven specialties featuring marinated meats and fresh naan breads.',
+        address: '780 Flame Road',
+        features: ['Open Kitchen', 'Family Style', 'Vegetarian Options'],
+        availableTimes: ['17:30', '18:00', '18:30', '19:00', '19:30', '20:00', '20:30', '21:00']
+      }
+    ];
+
+    // State
+    let userBookings = [];
+    let currentFilter = 'all';
+    let selectedRestaurant = null;
+    let bookingStep = 1;
+
+    // Default config
+    const defaultConfig = {
+      site_title: 'FineDine',
+      hero_heading: 'Discover & Book Amazing Restaurants',
+      hero_subtext: 'Find the perfect table for any occasion. Browse top-rated restaurants, check real-time availability, and secure your reservation in seconds.',
+      background_color: '#7f1d1d',
+      surface_color: '#fef2f2',
+      text_color: '#450a0a',
+      primary_action_color: '#dc2626',
+      secondary_action_color: '#991b1b',
+      font_family: 'Source Sans 3',
+      font_size: 16
+    };
+
+    // Data handler
+    const dataHandler = {
+      onDataChanged(data) {
+        userBookings = data;
+        updateBookingsList();
+      }
+    };
+
+    // Element SDK implementation
+    const elementImpl = {
+      defaultConfig,
+      onConfigChange: async (config) => {
+        const fontFamily = config.font_family || defaultConfig.font_family;
+        const fontSize = config.font_size || defaultConfig.font_size;
+        const baseFontStack = "'Source Sans 3', sans-serif";
+        const displayFontStack = "'Playfair Display', Georgia, serif";
+        
+        // Update text content
+        document.getElementById('nav-title').textContent = config.site_title || defaultConfig.site_title;
+        
+        const heroHeading = document.getElementById('hero-heading');
+        const headingText = config.hero_heading || defaultConfig.hero_heading;
+        if (headingText.includes('&')) {
+          const parts = headingText.split('&');
+          heroHeading.innerHTML = `${parts[0]}&<br><span class="text-amber-300">${parts[1] || 'Amazing Restaurants'}</span>`;
+        } else {
+          heroHeading.innerHTML = headingText;
+        }
+        
+        document.getElementById('hero-subtext').textContent = config.hero_subtext || defaultConfig.hero_subtext;
+        
+        // Apply colors
+        const bgColor = config.background_color || defaultConfig.background_color;
+        const surfaceColor = config.surface_color || defaultConfig.surface_color;
+        const textColor = config.text_color || defaultConfig.text_color;
+        const primaryColor = config.primary_action_color || defaultConfig.primary_action_color;
+        const secondaryColor = config.secondary_action_color || defaultConfig.secondary_action_color;
+        
+        document.documentElement.style.setProperty('--bg-color', bgColor);
+        document.documentElement.style.setProperty('--surface-color', surfaceColor);
+        document.documentElement.style.setProperty('--text-color', textColor);
+        document.documentElement.style.setProperty('--primary-color', primaryColor);
+        document.documentElement.style.setProperty('--secondary-color', secondaryColor);
+        
+        // Apply fonts
+        document.body.style.fontFamily = `${fontFamily}, ${baseFontStack}`;
+        document.querySelectorAll('.font-display').forEach(el => {
+          el.style.fontFamily = `${fontFamily}, ${displayFontStack}`;
+        });
+        document.body.style.fontSize = `${fontSize}px`;
+      },
+      mapToCapabilities: (config) => ({
+        recolorables: [
+          {
+            get: () => config.background_color || defaultConfig.background_color,
+            set: (value) => { config.background_color = value; window.elementSdk.setConfig({ background_color: value }); }
+          },
+          {
+            get: () => config.surface_color || defaultConfig.surface_color,
+            set: (value) => { config.surface_color = value; window.elementSdk.setConfig({ surface_color: value }); }
+          },
+          {
+            get: () => config.text_color || defaultConfig.text_color,
+            set: (value) => { config.text_color = value; window.elementSdk.setConfig({ text_color: value }); }
+          },
+          {
+            get: () => config.primary_action_color || defaultConfig.primary_action_color,
+            set: (value) => { config.primary_action_color = value; window.elementSdk.setConfig({ primary_action_color: value }); }
+          },
+          {
+            get: () => config.secondary_action_color || defaultConfig.secondary_action_color,
+            set: (value) => { config.secondary_action_color = value; window.elementSdk.setConfig({ secondary_action_color: value }); }
+          }
+        ],
+        borderables: [],
+        fontEditable: {
+          get: () => config.font_family || defaultConfig.font_family,
+          set: (value) => { config.font_family = value; window.elementSdk.setConfig({ font_family: value }); }
+        },
+        fontSizeable: {
+          get: () => config.font_size || defaultConfig.font_size,
+          set: (value) => { config.font_size = value; window.elementSdk.setConfig({ font_size: value }); }
+        }
+      }),
+      mapToEditPanelValues: (config) => new Map([
+        ['site_title', config.site_title || defaultConfig.site_title],
+        ['hero_heading', config.hero_heading || defaultConfig.hero_heading],
+        ['hero_subtext', config.hero_subtext || defaultConfig.hero_subtext]
+      ])
+    };
+
+    // Initialize
+    async function init() {
+      if (window.elementSdk) {
+        await window.elementSdk.init(elementImpl);
+      }
+      if (window.dataSdk) {
+        await window.dataSdk.init(dataHandler);
+      }
+      
+      // Set default date to today
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById('search-date').value = today;
+      
+      renderRestaurants();
+    }
+
+    // Render restaurants
+    function renderRestaurants() {
+      const grid = document.getElementById('restaurant-grid');
+      const filtered = currentFilter === 'all' 
+        ? restaurants 
+        : restaurants.filter(r => r.category === currentFilter);
+      
+      grid.innerHTML = filtered.map((restaurant, index) => `
+        <div class="glass-card rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 animate-fade-in-up" style="animation-delay: ${index * 0.1}s">
+          <div class="h-48 bg-gradient-to-br from-red-100 via-rose-50 to-red-50 overflow-hidden">
+            <img src="${restaurant.image}" alt="${restaurant.name}" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500" onerror="this.style.display='none'; this.parentElement.innerHTML='<div class=\\'h-full flex items-center justify-center text-6xl\\'>🍽️</div>';">
+          </div>
+          <div class="p-6">
+            <div class="flex items-start justify-between mb-2">
+              <h3 class="font-display text-xl font-bold text-gray-900">${restaurant.name}</h3>
+              <span class="text-amber-600 font-bold text-sm">${restaurant.price}</span>
+            </div>
+            <p class="text-gray-500 text-sm mb-3 uppercase tracking-wide">${restaurant.cuisine}</p>
+            <div class="flex items-center gap-2 mb-4">
+              <div class="flex items-center gap-1">
+                <svg class="w-4 h-4 text-amber-500" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                </svg>
+                <span class="font-bold text-gray-900">${restaurant.rating}</span>
+              </div>
+              <span class="text-gray-400 text-sm">(${restaurant.reviews} reviews)</span>
+            </div>
+            <div class="flex flex-wrap gap-2 mb-4">
+              ${restaurant.features.slice(0, 2).map(f => `
+                <span class="px-3 py-1 bg-red-50 text-red-700 text-xs font-medium rounded-full border border-red-100">${f}</span>
+              `).join('')}
+            </div>
+            <button onclick="openBookingModal('${restaurant.id}')" class="w-full gold-accent text-white py-3 rounded-xl font-semibold hover:opacity-90 transition-opacity tracking-wide">
+              Check Availability
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Filter by category
+    function filterByCategory(category) {
+      currentFilter = category;
+      
+      // Update pill styles
+      document.querySelectorAll('.filter-pill').forEach(pill => {
+        if (pill.dataset.category === category) {
+          pill.classList.remove('bg-white/10', 'hover:bg-red-600/50');
+          pill.classList.add('bg-red-600', 'shadow-lg');
+        } else {
+          pill.classList.add('bg-white/10', 'hover:bg-red-600/50');
+          pill.classList.remove('bg-red-600', 'shadow-lg');
+        }
+      });
+      
+      renderRestaurants();
+    }
+
+    // Search restaurants
+    function searchRestaurants() {
+      const query = document.getElementById('search-cuisine').value.toLowerCase();
+      
+      if (query) {
+        const category = restaurants.find(r => 
+          r.cuisine.toLowerCase().includes(query) || 
+          r.category.includes(query) ||
+          r.name.toLowerCase().includes(query)
+        )?.category || 'all';
+        filterByCategory(category);
+      }
+      
+      scrollToSection('restaurants');
+    }
+
+    // Open booking modal
+    function openBookingModal(restaurantId) {
+      selectedRestaurant = restaurants.find(r => r.id === restaurantId);
+      bookingStep = 1;
+      
+      renderBookingStep();
+      document.getElementById('booking-modal').classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    }
+
+    // Close booking modal
+    function closeBookingModal() {
+      document.getElementById('booking-modal').classList.add('hidden');
+      document.body.style.overflow = '';
+      selectedRestaurant = null;
+      bookingStep = 1;
+    }
+
+    // Render booking step
+    function renderBookingStep() {
+      const modal = document.getElementById('modal-content');
+      const today = new Date().toISOString().split('T')[0];
+      const searchDate = document.getElementById('search-date').value || today;
+      const searchGuests = document.getElementById('search-guests').value || '2';
+      
+      if (bookingStep === 1) {
+        modal.innerHTML = `
+          <div class="relative">
+            <div class="h-40 bg-gradient-to-br from-red-100 via-rose-50 to-red-50 flex items-center justify-center text-6xl">
+              ${selectedRestaurant.image}
+            </div>
+            <button onclick="closeBookingModal()" class="absolute top-4 right-4 p-2 bg-white/80 hover:bg-white rounded-full transition-colors">
+              <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+              </svg>
+            </button>
+          </div>
+          <div class="p-6">
+            <h2 class="font-display text-2xl font-bold text-gray-900 mb-1">${selectedRestaurant.name}</h2>
+            <p class="text-gray-500 mb-4">${selectedRestaurant.cuisine} • ${selectedRestaurant.address}</p>
+            
+            <div class="grid grid-cols-2 gap-4 mb-6">
+              <div>
+                <label for="booking-date" class="block text-sm font-medium text-gray-700 mb-2">Date</label>
+                <input type="date" id="booking-date" value="${searchDate}" min="${today}"
+                  class="w-full px-4 py-3 rounded-xl border border-red-200 focus:border-red-500 focus:ring-2 focus:ring-red-500/20 outline-none text-gray-800">
+              </div>
+              <div>
+                <label for="booking-guests" class="block text-sm font-medium text-gray-700 mb-2">Guests</label>
+                <select id="booking-guests" class="w-full px-4 py-3 rounded-xl border border-red-200 focus:border-red-500 focus:ring-2 focus:ring-red-500/20 outline-none text-gray-800">
+                  ${[2,3,4,5,6,7,8].map(n => `<option value="${n}" ${n == searchGuests ? 'selected' : ''}>${n} guests</option>`).join('')}
+                </select>
+              </div>
+            </div>
+            
+            <div class="mb-6">
+              <label class="block text-sm font-medium text-gray-700 mb-3">Available Times</label>
+              <div class="grid grid-cols-3 gap-2" id="time-slots">
+                ${selectedRestaurant.availableTimes.map(time => `
+                  <button onclick="selectTime('${time}')" class="time-slot px-4 py-2 rounded-lg border border-red-200 text-gray-700 hover:border-red-500 hover:bg-red-50 transition-all text-sm font-medium">
+                    ${time}
+                  </button>
+                `).join('')}
+              </div>
+            </div>
+            
+            <div class="flex items-center gap-2 text-sm text-gray-500">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+              Select a time to continue
+            </div>
+          </div>
+        `;
+      } else if (bookingStep === 2) {
+        const bookingData = window.currentBookingData || {};
+        modal.innerHTML = `
+          <div class="p-8">
+            <button onclick="goBackStep()" class="flex items-center gap-2 text-gray-500 hover:text-gray-700 mb-6 transition-colors">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+              </svg>
+              Back
+            </button>
+            
+            <div class="bg-red-50 rounded-xl p-4 mb-6 border border-red-100">
+              <div class="flex items-center gap-4">
+                <div class="w-16 h-16 bg-white rounded-xl flex items-center justify-center text-3xl">
+                  ${selectedRestaurant.image}
+                </div>
+                <div>
+                  <h3 class="font-semibold text-gray-900">${selectedRestaurant.name}</h3>
+                  <p class="text-gray-600 text-sm">${formatDate(bookingData.date)} • ${bookingData.time} • ${bookingData.guests} guests</p>
+                </div>
+              </div>
+            </div>
+            
+            <h2 class="font-display text-xl font-bold text-gray-900 mb-6">Complete Your Reservation</h2>
+            
+            <form id="booking-form" onsubmit="submitBooking(event)">
+              <div class="space-y-4 mb-6">
+                <div>
+                  <label for="guest-name" class="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
+                  <input type="text" id="guest-name" required placeholder="John Smith"
+                    class="w-full px-4 py-3 rounded-xl border border-red-200 focus:border-red-500 focus:ring-2 focus:ring-red-500/20 outline-none text-gray-800">
+                </div>
+                <div>
+                  <label for="guest-email" class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                  <input type="email" id="guest-email" required placeholder="john@example.com"
+                    class="w-full px-4 py-3 rounded-xl border border-red-200 focus:border-red-500 focus:ring-2 focus:ring-red-500/20 outline-none text-gray-800">
+                </div>
+                <div>
+                  <label for="guest-phone" class="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
+                  <input type="tel" id="guest-phone" required placeholder="+1 (555) 000-0000"
+                    class="w-full px-4 py-3 rounded-xl border border-red-200 focus:border-red-500 focus:ring-2 focus:ring-red-500/20 outline-none text-gray-800">
+                </div>
+                <div>
+                  <label for="special-requests" class="block text-sm font-medium text-gray-700 mb-2">Special Requests (optional)</label>
+                  <textarea id="special-requests" rows="3" placeholder="Dietary restrictions, celebrations, seating preferences..."
+                    class="w-full px-4 py-3 rounded-xl border border-red-200 focus:border-red-500 focus:ring-2 focus:ring-red-500/20 outline-none resize-none text-gray-800"></textarea>
+                </div>
+              </div>
+              
+              <button type="submit" id="submit-btn" class="w-full gold-accent text-white py-4 rounded-xl font-semibold hover:opacity-90 transition-opacity flex items-center justify-center gap-2">
+                <span id="submit-text">Confirm Reservation</span>
+                <svg id="submit-spinner" class="w-5 h-5 animate-spin hidden" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+              </button>
+            </form>
+          </div>
+        `;
+      } else if (bookingStep === 3) {
+        const bookingData = window.currentBookingData || {};
+        modal.innerHTML = `
+          <div class="p-8 text-center">
+            <div class="w-20 h-20 gold-accent rounded-full flex items-center justify-center mx-auto mb-6">
+              <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+              </svg>
+            </div>
+            
+            <h2 class="font-display text-2xl font-bold text-gray-900 mb-2">Booking Confirmed!</h2>
+            <p class="text-gray-600 mb-8">Your table has been reserved. We've sent a confirmation to your email.</p>
+            
+            <div class="bg-gray-50 rounded-xl p-6 mb-8 text-left">
+              <div class="flex items-center gap-4 mb-4">
+                <div class="w-14 h-14 bg-white rounded-xl flex items-center justify-center text-2xl shadow-sm">
+                  ${selectedRestaurant.image}
+                </div>
+                <div>
+                  <h3 class="font-semibold text-gray-900">${selectedRestaurant.name}</h3>
+                  <p class="text-gray-500 text-sm">${selectedRestaurant.address}</p>
+                </div>
+              </div>
+              <div class="space-y-2 text-sm">
+                <div class="flex justify-between">
+                  <span class="text-gray-500">Date</span>
+                  <span class="font-medium text-gray-900">${formatDate(bookingData.date)}</span>
+                </div>
+                <div class="flex justify-between">
+                  <span class="text-gray-500">Time</span>
+                  <span class="font-medium text-gray-900">${bookingData.time}</span>
+                </div>
+                <div class="flex justify-between">
+                  <span class="text-gray-500">Guests</span>
+                  <span class="font-medium text-gray-900">${bookingData.guests} people</span>
+                </div>
+                <div class="flex justify-between">
+                  <span class="text-gray-500">Name</span>
+                  <span class="font-medium text-gray-900">${bookingData.name}</span>
+                </div>
+              </div>
+            </div>
+            
+            <button onclick="closeBookingModal()" class="w-full gold-accent text-white py-4 rounded-xl font-semibold hover:opacity-90 transition-opacity">
+              Done
+            </button>
+          </div>
+        `;
+      }
+    }
+
+    // Select time slot
+    function selectTime(time) {
+      const date = document.getElementById('booking-date').value;
+      const guests = parseInt(document.getElementById('booking-guests').value);
+      
+      window.currentBookingData = {
+        date,
+        time,
+        guests
+      };
+      
+      bookingStep = 2;
+      renderBookingStep();
+    }
+
+    // Go back step
+    function goBackStep() {
+      bookingStep = 1;
+      renderBookingStep();
+    }
+
+    // Submit booking
+    async function submitBooking(e) {
+      e.preventDefault();
+      
+      const name = document.getElementById('guest-name').value;
+      const email = document.getElementById('guest-email').value;
+      const phone = document.getElementById('guest-phone').value;
+      const specialRequests = document.getElementById('special-requests').value;
+      
+      // Show loading
+      const submitBtn = document.getElementById('submit-btn');
+      const submitText = document.getElementById('submit-text');
+      const submitSpinner = document.getElementById('submit-spinner');
+      
+      submitBtn.disabled = true;
+      submitText.textContent = 'Confirming...';
+      submitSpinner.classList.remove('hidden');
+      
+      const bookingData = {
+        ...window.currentBookingData,
+        name,
+        email,
+        phone,
+        special_requests: specialRequests
+      };
+      
+      window.currentBookingData = bookingData;
+      
+      // Check booking limit
+      if (userBookings.length >= 999) {
+        showToast('Maximum booking limit reached');
+        submitBtn.disabled = false;
+        submitText.textContent = 'Confirm Reservation';
+        submitSpinner.classList.add('hidden');
+        return;
+      }
+      
+      // Save to Data SDK
+      if (window.dataSdk) {
+        const result = await window.dataSdk.create({
+          restaurant_id: selectedRestaurant.id,
+          restaurant_name: selectedRestaurant.name,
+          date: bookingData.date,
+          time: bookingData.time,
+          guests: bookingData.guests,
+          name: bookingData.name,
+          email: bookingData.email,
+          phone: bookingData.phone,
+          special_requests: bookingData.special_requests || '',
+          created_at: new Date().toISOString()
+        });
+        
+        if (!result.isOk) {
+          showToast('Failed to save booking. Please try again.');
+          submitBtn.disabled = false;
+          submitText.textContent = 'Confirm Reservation';
+          submitSpinner.classList.add('hidden');
+          return;
+        }
+      }
+      
+      bookingStep = 3;
+      renderBookingStep();
+      showToast('Booking confirmed successfully!');
+    }
+
+    // Show my bookings
+    function showMyBookings() {
+      updateBookingsList();
+      document.getElementById('bookings-modal').classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    }
+
+    // Close bookings modal
+    function closeBookingsModal() {
+      document.getElementById('bookings-modal').classList.add('hidden');
+      document.body.style.overflow = '';
+    }
+
+    // Update bookings list
+    function updateBookingsList() {
+      const list = document.getElementById('bookings-list');
+      
+      if (userBookings.length === 0) {
+        list.innerHTML = `
+          <div class="text-center py-12">
+            <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+              </svg>
+            </div>
+            <h3 class="font-semibold text-gray-900 mb-2">No Bookings Yet</h3>
+            <p class="text-gray-500 text-sm">Your reservations will appear here</p>
+          </div>
+        `;
+        return;
+      }
+      
+      list.innerHTML = userBookings.map(booking => {
+        const restaurant = restaurants.find(r => r.id === booking.restaurant_id);
+        return `
+          <div class="border border-gray-200 rounded-xl p-4 mb-4">
+            <div class="flex items-start gap-4">
+              <div class="w-12 h-12 bg-red-50 rounded-xl flex items-center justify-center text-2xl flex-shrink-0">
+                ${restaurant?.image || '🍽️'}
+              </div>
+              <div class="flex-1 min-w-0">
+                <h4 class="font-semibold text-gray-900">${booking.restaurant_name}</h4>
+                <p class="text-gray-500 text-sm">${formatDate(booking.date)} • ${booking.time}</p>
+                <p class="text-gray-500 text-sm">${booking.guests} guests • ${booking.name}</p>
+              </div>
+              <button onclick="cancelBooking('${booking.__backendId}')" class="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors" title="Cancel booking">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Cancel booking
+    async function cancelBooking(backendId) {
+      const booking = userBookings.find(b => b.__backendId === backendId);
+      if (!booking) return;
+      
+      if (window.dataSdk) {
+        const result = await window.dataSdk.delete(booking);
+        if (result.isOk) {
+          showToast('Booking cancelled');
+        } else {
+          showToast('Failed to cancel booking');
+        }
+      }
+    }
+
+    // Format date
+    function formatDate(dateStr) {
+      const date = new Date(dateStr);
+      return date.toLocaleDateString('en-US', { 
+        weekday: 'short', 
+        month: 'short', 
+        day: 'numeric' 
+      });
+    }
+
+    // Scroll to section
+    function scrollToSection(id) {
+      document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // Show toast
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toast-message').textContent = message;
+      toast.classList.remove('hidden');
+      
+      setTimeout(() => {
+        toast.classList.add('hidden');
+      }, 3000);
+    }
+
+    // Show auth modal
+    function showAuthModal(type) {
+      const modal = document.getElementById('auth-modal');
+      const content = document.getElementById('auth-modal-content');
+      
+      if (type === 'login') {
+        content.innerHTML = `
+          <div class="p-8">
+            <button onclick="closeAuthModal()" class="absolute top-4 right-4 p-2 hover:bg-gray-100 rounded-full transition-colors">
+              <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+              </svg>
+            </button>
+            
+            <div class="text-center mb-8">
+              <h2 class="font-display text-2xl font-bold text-gray-900 mb-2">Welcome Back</h2>
+              <p class="text-gray-500">Log in to manage your reservations</p>
+            </div>
+            
+            <form onsubmit="handleAuth(event, 'login')">
+              <div class="space-y-4 mb-6">
+                <div>
+                  <label for="login-email" class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                  <input type="email" id="login-email" required placeholder="your@email.com"
+                    class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-red-500 focus:ring-2 focus:ring-red-500/20 outline-none text-gray-800">
+                </div>
+                <div>
+                  <label for="login-password" class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+                  <input type="password" id="login-password" required placeholder="••••••••"
+                    class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-red-500 focus:ring-2 focus:ring-red-500/20 outline-none text-gray-800">
+                </div>
+              </div>
+              
+              <button type="submit" class="w-full gold-accent text-white py-3 rounded-xl font-semibold hover:opacity-90 transition-opacity mb-4">
+                Log In
+              </button>
+              
+              <p class="text-center text-sm text-gray-500">
+                Don't have an account? <button type="button" onclick="showAuthModal('signup')" class="text-red-600 font-medium hover:underline">Sign up</button>
+              </p>
+            </form>
+          </div>
+        `;
+      } else {
+        content.innerHTML = `
+          <div class="p-8">
+            <button onclick="closeAuthModal()" class="absolute top-4 right-4 p-2 hover:bg-gray-100 rounded-full transition-colors">
+              <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+              </svg>
+            </button>
+            
+            <div class="text-center mb-8">
+              <h2 class="font-display text-2xl font-bold text-gray-900 mb-2">Create Account</h2>
+              <p class="text-gray-500">Join FineDine for exclusive benefits</p>
+            </div>
+            
+            <form onsubmit="handleAuth(event, 'signup')">
+              <div class="space-y-4 mb-6">
+                <div>
+                  <label for="signup-name" class="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
+                  <input type="text" id="signup-name" required placeholder="John Smith"
+                    class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-red-500 focus:ring-2 focus:ring-red-500/20 outline-none text-gray-800">
+                </div>
+                <div>
+                  <label for="signup-email" class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                  <input type="email" id="signup-email" required placeholder="your@email.com"
+                    class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-red-500 focus:ring-2 focus:ring-red-500/20 outline-none text-gray-800">
+                </div>
+                <div>
+                  <label for="signup-phone" class="block text-sm font-medium text-gray-700 mb-2">Phone</label>
+                  <input type="tel" id="signup-phone" required placeholder="+1 (555) 000-0000"
+                    class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-red-500 focus:ring-2 focus:ring-red-500/20 outline-none text-gray-800">
+                </div>
+                <div>
+                  <label for="signup-password" class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+                  <input type="password" id="signup-password" required placeholder="••••••••" minlength="8"
+                    class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-red-500 focus:ring-2 focus:ring-red-500/20 outline-none text-gray-800">
+                </div>
+              </div>
+              
+              <button type="submit" class="w-full gold-accent text-white py-3 rounded-xl font-semibold hover:opacity-90 transition-opacity mb-4">
+                Create Account
+              </button>
+              
+              <p class="text-center text-sm text-gray-500">
+                Already have an account? <button type="button" onclick="showAuthModal('login')" class="text-red-600 font-medium hover:underline">Log in</button>
+              </p>
+            </form>
+          </div>
+        `;
+      }
+      
+      modal.classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    }
+    
+    // Close auth modal
+    function closeAuthModal() {
+      document.getElementById('auth-modal').classList.add('hidden');
+      document.body.style.overflow = '';
+    }
+    
+    // Handle auth (demo)
+    function handleAuth(e, type) {
+      e.preventDefault();
+      closeAuthModal();
+      if (type === 'login') {
+        showToast('Welcome back! You are now logged in.');
+      } else {
+        showToast('Account created successfully! Welcome to FineDine.');
+      }
+    }
+
+    // Initialize on load
+    init();
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9afdb412d66c7a30',t:'MTc2NjA1MDg3NS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
